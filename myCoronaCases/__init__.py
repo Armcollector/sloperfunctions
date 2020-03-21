@@ -19,11 +19,26 @@ def insert_values_db(nor_cases, nor_dead, world_cases, world_dead):
     crsr.commit()
     crsr.close()
 
+def get_latest_values_df():
+
+    crsr, _ = get_cursor_and_connection()
+
+    crsr.execute('select top 1 nor_cases, nor_dead, world_cases, world_dead from corona order by date_time desc')
+
+    vals = crsr.fetchone()
+
+    crsr.close()
+
+    return vals
+
+
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
 
     insert_values_db(1,2,3,4)
+
+    nor_cases, nor_dead, world_cases, world_dead  = get_latest_values_df()
 
     name = req.params.get('name')
     if not name:
