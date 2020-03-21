@@ -4,6 +4,7 @@ import azure.functions as func
 import pyodbc
 import requests
 import re
+import datetime
 
 
 def get_cursor_and_connection():
@@ -63,9 +64,13 @@ def post_text(nor_cases, nor_dead, world_cases, world_dead):
                   "text": f'Norway: { nor_cases } cases and {nor_dead} dead.  World wide: {world_cases} cases and {world_dead} dead.'
                })
 
+def main(mytimer: func.TimerRequest) -> None:
+    utc_timestamp = datetime.datetime.utcnow().replace(
+        tzinfo=datetime.timezone.utc).isoformat()
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+
+    logging.info('Python timer trigger function ran at %s', utc_timestamp)
+
 
     nor_cases, nor_dead, _, _  = get_latest_values_db()
 
@@ -76,10 +81,3 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         insert_values_db(new_nor_cases, new_nor_dead, new_world_cases, new_world_dead)
         post_text(new_nor_cases, new_nor_dead, new_world_cases, new_world_dead)
-
-
-    
-    return func.HttpResponse(
-            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-            status_code=200
-    )
