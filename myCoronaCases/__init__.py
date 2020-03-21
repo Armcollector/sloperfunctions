@@ -2,7 +2,7 @@ import logging
 import os
 import azure.functions as func
 import pyodbc
-
+import requests
 
 def get_cursor_and_connection():
     cnxn = pyodbc.connect(os.environ.get('DATABASECONNECTIONSTRING'))
@@ -30,6 +30,18 @@ def get_latest_values_df():
     crsr.close()
 
     return vals
+
+def norway_numbers_vg():
+    """
+        Get latest numbers from vg
+    """
+    
+    totals = requests.get('https://redutv-api.vg.no/corona/v1/sheets/norway-table-overview/?region=county').json()['totals']
+
+    cases = totals['confirmed']
+    dead = totals['dead']
+
+    return cases, dead
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
