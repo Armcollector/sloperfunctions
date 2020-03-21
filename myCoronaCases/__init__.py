@@ -3,6 +3,8 @@ import os
 import azure.functions as func
 import pyodbc
 import requests
+import re
+
 
 def get_cursor_and_connection():
     cnxn = pyodbc.connect(os.environ.get('DATABASECONNECTIONSTRING'))
@@ -42,6 +44,14 @@ def norway_numbers_vg():
     dead = totals['dead']
 
     return cases, dead
+
+def world_numbers():
+    """
+        Get latest world numbers from worldometers
+    """
+
+    ww_cases, ww_deaths = re.match('.*<title>Coronavirus Update \(Live\): (\d*,\d*) Cases and (\d*,\d*)', str(requests.get('https://www.worldometers.info/coronavirus/').content)).groups()
+    return int(ww_cases.replace(',','')) , int(ww_deaths.replace(',',''))
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
