@@ -21,7 +21,7 @@ def insert_values_db(nor_cases, nor_dead, world_cases, world_dead):
     crsr.commit()
     crsr.close()
 
-def get_latest_values_df():
+def get_latest_values_db():
 
     crsr, _ = get_cursor_and_connection()
 
@@ -50,31 +50,36 @@ def world_numbers():
         Get latest world numbers from worldometers
     """
 
-    ww_cases, ww_deaths = re.match('.*<title>Coronavirus Update \(Live\): (\d*,\d*) Cases and (\d*,\d*)', str(requests.get('https://www.worldometers.info/coronavirus/').content)).groups()
-    return int(ww_cases.replace(',','')) , int(ww_deaths.replace(',',''))
+    ww_cases, ww_dead = re.match('.*<title>Coronavirus Update \(Live\): (\d*,\d*) Cases and (\d*,\d*)', str(requests.get('https://www.worldometers.info/coronavirus/').content)).groups()
+    return int(ww_cases.replace(',','')) , int(ww_dead.replace(',',''))
+
+def post_text(nor_cases, nor_dead, world_cases, world_dead):
+    """
+        Post text to telegram channel
+    """
+    token = os.environ.get('TELEGRAMTOKEN')
+    method = f'https://api.telegram.org/bot{token}/sendMessage'
+    requests.post(method, data = {"chat_id": "-1001181973339",
+                  "text": f'Norway: { nor_cases } cases and {nor_dead} dead.  World wide: {world_cases} cases and {world_dead} dead.'
+               })
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
+    nor_cases, nor_dead, _, _  = get_latest_values_db()
 
-    insert_values_db(1,2,3,4)
+    new_nor_cases, new_nor_dead = norway_numbers_vg()
 
-    nor_cases, nor_dead, world_cases, world_dead  = get_latest_values_df()
+    if new_nor_cases > nor_cases or new_nor_dead > nor_dead:
+        new_world_cases, new_world_dead = world_numbers()
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+        insert_values_db(new_nor_cases, new_nor_dead, new_world_cases, new_world_dead)
+        post_text(new_nor_cases, new_nor_dead, new_world_cases, new_world_dead)
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+
+    
+    return func.HttpResponse(
+            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+            status_code=200
+    )
