@@ -51,7 +51,8 @@ def world_numbers():
         Get latest world numbers from worldometers
     """
 
-    ww_cases, ww_dead = re.match('.*<title>Coronavirus Update \(Live\): (\d*,\d*) Cases and (\d*,\d*)', str(requests.get('https://www.worldometers.info/coronavirus/').content)).groups()
+    ww_cases, ww_dead = re.match('.*<title>Coronavirus Update \(Live\): (\d*,\d*,\d*) Cases and (\d*,\d*)', str(requests.get('https://www.worldometers.info/coronavirus/').content)).groups()
+
     return int(ww_cases.replace(',','')) , int(ww_dead.replace(',',''))
 
 def post_text(nor_cases, nor_dead, world_cases, world_dead):
