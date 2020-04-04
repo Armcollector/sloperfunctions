@@ -62,7 +62,7 @@ def post_text(nor_cases, nor_dead, world_cases, world_dead):
     token = os.environ.get('TELEGRAMTOKEN')
     method = f'https://api.telegram.org/bot{token}/sendMessage'
     requests.post(method, data = {"chat_id": "-1001181973339",
-                  "text": f'Norway: { nor_cases } cases and {nor_dead} dead.  World wide: {world_cases} cases and {world_dead} dead.'
+                  "text": f'Norway: { nor_cases:, } cases and {nor_dead:,} dead.  World wide: {world_cases:,} cases and {world_dead:,} dead.'
                })
 
 def main(mytimer: func.TimerRequest) -> None:
