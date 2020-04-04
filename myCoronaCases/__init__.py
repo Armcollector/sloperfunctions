@@ -44,7 +44,7 @@ def norway_numbers_vg():
     cases = totals['confirmed']
     dead = totals['dead']
 
-    return cases, dead
+    return int(cases), int(dead)
 
 def world_numbers():
     """
