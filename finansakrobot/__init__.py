@@ -18,7 +18,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     session = FuturesSession()
     # first request is started in background
     url = os.environ["SendMessageFunctionUrl"]
-    future_one = session.get(f"{url}?ticker={ticker}&channel={req.form["channel_name"]}")
+    future_one = session.get(
+        f"{url}?ticker={ticker}&channel={req.form['channel_name']}"
+    )
 
     logging.info("returning")
     return func.HttpResponse(
