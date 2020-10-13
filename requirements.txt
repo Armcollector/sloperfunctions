@@ -1,4 +1,5 @@
+yfinance==0.1.55
 azure-functions
 pyodbc
 requests
-yfinance
+pandas
