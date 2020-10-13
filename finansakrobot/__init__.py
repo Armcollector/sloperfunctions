@@ -7,7 +7,7 @@ import yfinance as yf
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    ticker = req._HttpRequest__form["text"]
+    ticker = req.form["text"]
     
     if "." not in ticker:
         ticker += ".OL"
