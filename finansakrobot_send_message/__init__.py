@@ -10,9 +10,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     tick_dict = yf.Ticker(req.params["ticker"]).info
 
+    channel = req.params["channel"]
+
     client = WebClient(token="xoxb-11406248935-1437312894113-m0FnzReJEtCbmufHAGhhX1XU")
     client.chat_postMessage(
-        channel=os.environ["SLACKCHANNEL"],
+        channel=channel,
         text=f"{tick_dict['shortName']},  bid:{tick_dict['bid']}, ask: {tick_dict['ask']}",
     )
     return func.HttpResponse(status_code=200)
