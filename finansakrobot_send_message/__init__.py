@@ -1,4 +1,5 @@
 import logging
+import os
 
 import azure.functions as func
 import yfinance as yf
@@ -12,7 +13,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     channel = req.params["channel"]
 
-    client = WebClient(token="xoxb-11406248935-1437312894113-m0FnzReJEtCbmufHAGhhX1XU")
+    client = WebClient(token=os.environ["token"])
     client.chat_postMessage(
         channel=channel,
         text=f"{tick_dict['shortName']},  bid:{tick_dict['bid']}, ask: {tick_dict['ask']}",
