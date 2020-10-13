@@ -7,13 +7,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     ticker = req.params.get('text')
-    if not name:
+    if not ticker:
         try:
             req_body = req.get_json()
         except ValueError:
             pass
         else:
-            name = req_body.get('text')
+            ticker = req_body.get('text')
 
 
     if "." not in ticker:
