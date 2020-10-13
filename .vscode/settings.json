@@ -4,5 +4,6 @@
     "azureFunctions.projectLanguage": "Python",
     "azureFunctions.projectRuntime": "~2",
     "debug.internalConsoleOptions": "neverOpen",
-    "python.pythonPath": "c:\\git\\sloperfunctions\\.venv\\Scripts\\python.exe"
+    "python.pythonPath": "c:\\git\\sloperfunctions\\.venv\\Scripts\\python.exe",
+    "azureFunctions.pythonVenv": ".venv",
 }
